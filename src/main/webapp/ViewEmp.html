@@ -1,17 +1,135 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>View All Employees</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All Employees | EmployeeTrack</title>
+<style>
+:root {
+  --purple: #B66CFF;
+  --purple-dark: #8238C7;
+  --lavender: #E9D5FF;
+  --lime: #D9FF83;
+  --ink: #211B2B;
+  --muted: #777080;
+  --paper: #FAF8FC;
+  --white: #FFFFFF;
+  --line: #E9E2EF;
+  --shadow: 0 22px 60px rgba(55, 28, 78, .12);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; min-height: 100vh; padding: 28px;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 8% 8%, rgba(182,108,255,.20), transparent 28rem),
+    radial-gradient(circle at 92% 90%, rgba(217,255,131,.30), transparent 25rem),
+    var(--paper);
+}
+a { color: inherit; text-decoration: none; }
+.topbar {
+  max-width: 1100px; margin: 0 auto 34px; display: flex;
+  align-items: center; justify-content: space-between; gap: 18px;
+}
+.brand { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: -.04em; font-size: 18px; }
+.brand-mark {
+  width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center;
+  background: var(--lime); color: var(--ink); font-size: 20px; box-shadow: 0 5px 16px rgba(70,90,20,.12);
+}
+.nav { display: flex; flex-wrap: wrap; gap: 8px; }
+.nav a { padding: 10px 14px; border-radius: 999px; color: var(--muted); font-size: 13px; font-weight: 700; transition: .2s; }
+.nav a:hover, .nav a.active { background: var(--lavender); color: var(--purple-dark); }
+.shell { max-width: 1100px; margin: 0 auto; }
+.hero {
+  position: relative; overflow: hidden; border-radius: 30px; padding: clamp(28px, 6vw, 66px);
+  background: var(--ink); color: white; box-shadow: var(--shadow);
+}
+.hero:after {
+  content: ""; position: absolute; width: 300px; height: 300px; border-radius: 50%;
+  right: -70px; top: -120px; background: var(--purple); opacity: .95;
+}
+.hero:before {
+  content: ""; position: absolute; width: 170px; height: 170px; border-radius: 50%;
+  right: 125px; bottom: -115px; background: var(--lime);
+}
+.eyebrow { position: relative; z-index: 1; color: var(--lime); text-transform: uppercase; letter-spacing: .16em; font-size: 11px; font-weight: 800; }
+h1 { position: relative; z-index: 1; max-width: 650px; margin: 14px 0 14px; font-size: clamp(38px, 6vw, 66px); line-height: .98; letter-spacing: -.065em; }
+.hero p { position: relative; z-index: 1; max-width: 570px; margin: 0; color: #D8D1E0; line-height: 1.7; font-size: 15px; }
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px; }
+.card {
+  display: block; padding: 24px; min-height: 190px; border: 1px solid var(--line);
+  border-radius: 22px; background: rgba(255,255,255,.88); box-shadow: 0 8px 28px rgba(55,28,78,.05);
+  transition: transform .2s, box-shadow .2s, border-color .2s;
+}
+.card:hover { transform: translateY(-5px); box-shadow: var(--shadow); border-color: #D8B8FA; }
+.card-icon { width: 46px; height: 46px; display: grid; place-items: center; border-radius: 15px; background: var(--lavender); color: var(--purple-dark); font-size: 21px; margin-bottom: 22px; }
+.card:nth-child(2) .card-icon { background: #EFFFCB; color: #496400; }
+.card:nth-child(3) .card-icon { background: #F3E7FF; color: #8238C7; }
+.card h2 { margin: 0 0 8px; font-size: 18px; letter-spacing: -.03em; }
+.card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.arrow { display: inline-block; margin-top: 18px; color: var(--purple-dark); font-size: 13px; font-weight: 800; }
+.panel {
+  max-width: 620px; margin: 42px auto; padding: clamp(25px, 5vw, 42px);
+  background: var(--white); border: 1px solid var(--line); border-radius: 28px; box-shadow: var(--shadow);
+}
+.panel-head { margin-bottom: 28px; }
+.panel-head .eyebrow { color: var(--purple-dark); }
+.panel h1 { color: var(--ink); font-size: clamp(32px, 5vw, 44px); margin: 10px 0; }
+.panel-head p { margin: 0; color: var(--muted); line-height: 1.6; font-size: 14px; }
+.field { margin: 18px 0; }
+label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 800; }
+input {
+  width: 100%; border: 1.5px solid var(--line); background: #FCFAFE; border-radius: 13px;
+  padding: 14px 15px; color: var(--ink); font: inherit; font-size: 14px; outline: none; transition: .2s;
+}
+input:focus { border-color: var(--purple); box-shadow: 0 0 0 4px rgba(182,108,255,.15); background: white; }
+input::placeholder { color: #AAA2B1; }
+button, input[type=submit] {
+  border: 0; cursor: pointer; border-radius: 13px; padding: 14px 20px;
+  background: var(--purple); color: #24152F; font: inherit; font-size: 14px; font-weight: 850;
+  box-shadow: 0 8px 20px rgba(182,108,255,.25); transition: .2s;
+}
+button:hover, input[type=submit]:hover { transform: translateY(-2px); background: var(--lime); box-shadow: 0 10px 24px rgba(120,150,40,.18); }
+.actions { display: flex; gap: 12px; align-items: center; margin-top: 26px; }
+.actions input[type=submit] { width: 100%; }
+.back { display: inline-block; color: var(--muted); font-size: 13px; font-weight: 700; }
+.back:hover { color: var(--purple-dark); }
+.footer { max-width: 1100px; margin: 28px auto 0; text-align: center; color: #9B93A2; font-size: 12px; }
+@media (max-width: 720px) {
+  body { padding: 18px; }
+  .topbar { align-items: flex-start; flex-direction: column; margin-bottom: 22px; }
+  .cards { grid-template-columns: 1fr; }
+  .card { min-height: auto; }
+  .hero { border-radius: 23px; }
+  .hero:after { width: 190px; height: 190px; right: -100px; }
+}
+</style>
 </head>
 <body>
 
-<h2>View All Employee Details</h2>
-
-<form action="etsview">
-    <input type="submit" value="View">
-</form>
-
+    <header class="topbar">
+      <a class="brand" href="FormHome.html"><span class="brand-mark">✳</span><span>Employee<span style="color:var(--purple-dark)">Track</span></span></a>
+      <nav class="nav">
+        <a class="" href="FormHome.html">Overview</a>
+        <a class="" href="SaveEmp.html">Add employee</a>
+        <a class="active" href="ViewEmp.html">All employees</a>
+        <a class="" href="ViewEmpOnId.html">Find by ID</a>
+      </nav>
+    </header>
+<main class="shell">
+<section class="panel">
+  <div class="panel-head">
+    <div class="eyebrow">Employee directory</div>
+    <h1>All employees</h1>
+    <p>Retrieve the employee records currently stored in your database.</p>
+  </div>
+  <form action="etsview" method="get">
+    <div class="actions"><input type="submit" value="Load employee records →"></div>
+  </form>
+  <p style="margin:18px 0 0;color:var(--muted);font-size:12px;">Your employee details will appear after the request is processed.</p>
+</section>
+</main>
+<footer class="footer">EmployeeTrack · Simple employee record management</footer>
 </body>
 </html>
